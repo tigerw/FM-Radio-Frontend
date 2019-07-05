@@ -1,0 +1,26 @@
+[
+	uuid(31563639-767a-405a-a6cb-5e68beb99185),
+	version(1.0)
+]
+interface MiniportServiceInterface
+{
+	void EnableRadio();
+	void DisableRadio();
+	void SeekForwards();
+	void SeekBackwards();
+
+	enum Event
+	{
+		FrequencyChanged,
+		PlayStateChanged
+	};
+
+	union Notification switch (enum Event Type)
+	{
+		case FrequencyChanged: unsigned long KHz;
+		case PlayStateChanged: boolean PlayState;
+	};
+
+	union Notification AcquireEvent();
+	void QueueInitialStateEvents();
+}

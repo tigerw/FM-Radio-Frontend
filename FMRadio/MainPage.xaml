@@ -1,0 +1,65 @@
+﻿<Page
+    x:Class="FMRadio.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FMRadio"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<StackPanel Padding="24">
+			<Border BorderBrush="{ThemeResource AppBarItemForegroundThemeBrush}" BorderThickness="3" Padding="12">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+
+					<TextBlock x:Name="StationNameTextBlock" 
+                               VerticalAlignment="Center" HorizontalAlignment="Center" TextLineBounds="TrimToCapHeight" />
+
+					<SymbolIcon Symbol="{Binding SignalBars}" HorizontalAlignment="Left" Grid.RowSpan="2" Margin="0,0,0,107" />
+
+					<TextBlock Text="FM" HorizontalAlignment="Right" VerticalAlignment="Top" TextLineBounds="TrimToCapHeight" Grid.RowSpan="2" />
+					<TextBlock Text="MHz" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextLineBounds="TrimToBaseline" Grid.RowSpan="2" />
+
+					<TextBlock x:Name="FrequencyTextBlock"
+                               FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" TextLineBounds="Tight" />
+					
+					<!--<TextBlock Text="{Binding Frequency, Converter={StaticResource FrequencyFormatter}}" 
+                               FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" TextLineBounds="Tight" />-->
+
+					<!--<TextBox Text="{Binding Frequency, Converter={StaticResource FrequencyFormatter}, Mode=TwoWay}" 
+                             FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,18,0,0" Margin="0,-12" Grid.RowSpan="2" />-->
+				</Grid>
+			</Border>
+
+			<TextBlock x:Name="StationCallsignTextBlock" TextWrapping="Wrap"/>
+			<TextBlock x:Name="ProgrammeDescriptionTextBlock" TextWrapping="Wrap"/>
+			<TextBlock x:Name="ProgrammeGenreTextBlock" TextWrapping="Wrap"/>
+
+			<Slider HorizontalAlignment="Center" VerticalAlignment="Top" Width="242"/>
+		</StackPanel>
+
+		<CommandBar VerticalAlignment="Bottom">
+			<AppBarToggleButton Name="OutputButton" Icon="Phone" Label="Speakers" IsChecked="{Binding ToggleOutputButtonValue}" Click="ToggledOutput"/>
+			<AppBarSeparator/>
+			<AppBarButton Icon="Back" Label="Back" Click="SeekedBackward"/>
+			<AppBarButton x:Name="PlayStateButton" Icon="{x:Bind PlayPauseButtonSymbol, Mode=OneWay}" Label="{x:Bind PlayPauseButtonText, Mode=OneWay}" Click="ToggledPlayState"/>
+			<AppBarButton Icon="Forward" Label="Forward" Click="SeekedForward"/>
+			<CommandBar.SecondaryCommands>
+				<AppBarButton Icon="Globe" Label="Region">
+					<AppBarButton.Flyout>
+						<MenuFlyout>
+							<MenuFlyoutItem Text="Worldwide" Click="RegionChangedToWorldwide_Click"/>
+							<MenuFlyoutItem Text="North America" Click="RegionChangedToNorthAmerica"/>
+							<MenuFlyoutItem Text="Japan" Click="RegionChangedToJapan"/>
+						</MenuFlyout>
+					</AppBarButton.Flyout>
+				</AppBarButton>
+			</CommandBar.SecondaryCommands>
+		</CommandBar>
+	</Grid>
+</Page>
