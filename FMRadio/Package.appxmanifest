@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="8419TigerWang.Airwaves" Publisher="CN=6F3B45BD-FB5C-4DB0-ACF0-6E6DFA7321E8" Version="1.0.34.0" />
+  <Identity Name="8419TigerWang.Airwaves" Publisher="CN=6F3B45BD-FB5C-4DB0-ACF0-6E6DFA7321E8" Version="1.1.41.0" />
   <mp:PhoneIdentity PhoneProductId="94de1a33-d2d4-46f8-9339-948f1d50d268" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Airwaves</DisplayName>

@@ -11,8 +11,10 @@ namespace winrt::FMRadio::implementation
 		MainPage();
 
 		void Initialise(RadioAPI *);
+		void PageLoaded(const Windows::Foundation::IInspectable &, const Windows::UI::Xaml::RoutedEventArgs &);
 
-		void Activate();
+		hstring FrequencyText();
+		void FrequencyText(hstring);
 
 		hstring PlayPauseButtonText();
 		void PlayPauseButtonText(hstring);
@@ -30,10 +32,11 @@ namespace winrt::FMRadio::implementation
 
 		winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& value);
 		void PropertyChanged(winrt::event_token const& token);
+
 	private:
-		//ZuneAPI Radio;
 		RadioAPI * Radio;
 		bool RadioPlaying;
+		hstring DisplayedFrequency;
 		winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler> PropertyChanged_;
 	};
 }

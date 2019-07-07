@@ -1,7 +1,17 @@
 #include "pch.h"
 #include "Miniport API.h"
 #include "Native API/Miniport/RPC Client.h"
-#include "Miniport Service Interface_c.c" 
+#include "Miniport Service Interface_c.c"
+
+void __RPC_FAR* __RPC_USER midl_user_allocate(size_t len)
+{
+	return operator new(len);
+}
+
+void __RPC_USER midl_user_free(void __RPC_FAR* ptr)
+{
+	delete ptr;
+}
 
 void MiniportAPI::NotificationProcessor()
 {
@@ -9,7 +19,8 @@ void MiniportAPI::NotificationProcessor()
 	{
 		RpcTryExcept
 		{
-			const auto Event = ::AcquireEvent();
+			Notification Event;
+			::AcquireEvent(ClientId, &Event);
 			switch (Event.Type)
 			{
 				case Event::FrequencyChanged:
@@ -25,7 +36,7 @@ void MiniportAPI::NotificationProcessor()
 				}
 			}
 		}
-		RpcExcept(EXCEPTION_EXECUTE_HANDLER)
+		RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 		{
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
@@ -37,7 +48,7 @@ void MiniportAPI::PingRPCServer()
 {
 	RpcTryExcept
 	{
-		::QueueInitialStateEvents();
+		ClientId = ::AcquireClientId();
 	}
 	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 	{

@@ -47,15 +47,16 @@ namespace winrt::FMRadio::implementation
 					const auto TextualFrequency = std::to_wstring(Frequency);
 					if (TextualFrequency.length() < Kilo)
 					{
-						FrequencyTextBlock().Text(TextualFrequency);
+						DisplayedFrequency = TextualFrequency;
 					}
 					else
 					{
 						const auto IntegerPartLength = TextualFrequency.length() - Kilo;
 						const auto IntegerPart = TextualFrequency.substr(0, IntegerPartLength);
 						const auto FractionalPart = TextualFrequency.substr(IntegerPartLength, std::wstring::npos);
-						FrequencyTextBlock().Text(IntegerPart + std::use_facet<std::numpunct<wchar_t>>(std::locale()).decimal_point() + FractionalPart);
+						DisplayedFrequency = IntegerPart + std::use_facet<std::numpunct<wchar_t>>(std::locale()).decimal_point() + FractionalPart;
 					}
+					PropertyChanged_(*this, Windows::UI::Xaml::Data::PropertyChangedEventArgs(L"FrequencyText"));
 				}
 			);
 		};
@@ -88,8 +89,9 @@ namespace winrt::FMRadio::implementation
 		};
 	}
 
-	void MainPage::Activate()
+	void MainPage::PageLoaded(const Windows::Foundation::IInspectable &, const Windows::UI::Xaml::RoutedEventArgs &)
 	{
+
 		try
 		{
 			Radio->AcquireInitialState();
@@ -107,6 +109,16 @@ namespace winrt::FMRadio::implementation
 			Windows::UI::Popups::MessageDialog msg(L"Unknown error");
 			msg.ShowAsync();
 		}
+	}
+
+	hstring MainPage::FrequencyText()
+	{
+		return DisplayedFrequency;
+	}
+
+	void MainPage::FrequencyText(hstring)
+	{
+		throw hresult_not_implemented();
 	}
 
 	hstring MainPage::PlayPauseButtonText()

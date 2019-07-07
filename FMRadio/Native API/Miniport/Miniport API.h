@@ -2,10 +2,13 @@
 
 #include "pch.h"
 #include "Native API/Radio API.h"
+#include "Miniport Service Interface.h"
 
 class MiniportAPI : public RadioAPI
 {
 	std::thread ListenerThread;
+
+	Client ClientId;
 
 	void NotificationProcessor();
 

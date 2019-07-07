@@ -12,7 +12,7 @@
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Store</ApplicationType>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
-    <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition=" '$(WindowsTargetPlatformVersion)' == '' ">10.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.14393.0</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -75,30 +75,15 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="PropertySheet.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>$(SolutionName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>$(SolutionName)</TargetName>
+  <PropertyGroup Label="UserMacros">
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+    <PackageCertificateThumbprint>AF61F67594611B8AB139791717204E7B5C203E98</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -148,18 +133,6 @@
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </CompileAsWinRT>
     </ClCompile>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">midl /env arm32 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">midl /env arm64 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">midl /env win32 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">midl /env x64 /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
@@ -213,18 +186,6 @@
       <ControlFlowGuard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ControlFlowGuard>
       <ControlFlowGuard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ControlFlowGuard>
     </ClCompile>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">midl /env arm32 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">midl /env arm64 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">midl /env win32 /h "Miniport Service Interface_h.h" /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">midl /env x64 /W1 /char signed /osf "Miniport Service Interface.idl"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Native API\Miniport\Miniport API.h" />
@@ -260,8 +221,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="FMRadio_StoreKey.pfx" />
-    <None Include="FMRadio_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LargeTile.scale-100.png" />
@@ -285,6 +244,11 @@
     <Image Include="Assets\Square150x150Logo.scale-150.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-400.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
     <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
     <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
     <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
@@ -336,7 +300,26 @@
     <Midl Include="MainPage.idl">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Midl>
-    <Text Include="Miniport Service Interface.idl" />
+    <CustomBuild Include="Miniport Service Interface.idl">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+      </AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">midl /env arm64 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">midl /env arm64 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">midl /env arm32 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">midl /env arm32 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">midl /env win32 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">midl /env win32 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">midl /env x64 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">midl /env x64 /W1 /target NT100 /char signed "Miniport Service Interface.idl"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Miniport Service Interface.h;Miniport Service Interface_c.c;Miniport Service Interface_s.c;%(Outputs)</Outputs>
+    </CustomBuild>
     <Midl Include="UnsupportedDevicePage.idl">
       <DependentUpon>UnsupportedDevicePage.xaml</DependentUpon>
       <SubType>Code</SubType>

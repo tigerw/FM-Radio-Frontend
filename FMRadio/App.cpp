@@ -36,26 +36,6 @@ App::App()
 		}
 	});
 #endif
-
-	try
-	{
-		Radio.Initialise();
-		MainPage = std::make_unique<struct MainPage>();
-		MainPage->Initialise(&Radio);
-	}
-	catch (std::system_error & e)
-	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter("Conversion to UTF-8 failed when displaying an error", L"Conversion to UTF-16 failed when displaying an error");
-		std::wstring wide = converter.from_bytes(e.what());
-
-		UnsupportedPage = std::make_unique<struct UnsupportedDevicePage>();
-		UnsupportedPage->Initialise(std::move(wide));
-	}
-	catch (...)
-	{
-		UnsupportedPage = std::make_unique<struct UnsupportedDevicePage>();
-		UnsupportedPage->Initialise(L"Unknown error");
-	}
 }
 
 /// <summary>
@@ -90,40 +70,14 @@ void App::OnLaunched(LaunchActivatedEventArgs const& e)
 
 		if (e.PrelaunchActivated() == false)
 		{
-			if (rootFrame.Content() == nullptr)
-			{
-				// When the navigation stack isn't restored navigate to the first page or the error page
-				rootFrame.Content(MainPage ? static_cast<Windows::Foundation::IInspectable const &>(*MainPage) : *UnsupportedPage);
-			}
-			// Place the frame in the current Window
-			Window::Current().Content(rootFrame);
-			// Ensure the current window is active
-			Window::Current().Activate();
-
-			// Do secondary initialisation on the MainPage (acquire initial state) only if the hardware is supported
-			if (MainPage)
-			{
-				MainPage->Activate();
-			}
+			NavigateDependingOnInitialisation(rootFrame, e, true);
 		}
 	}
 	else
 	{
 		if (e.PrelaunchActivated() == false)
 		{
-			if (rootFrame.Content() == nullptr)
-			{
-				// When the navigation stack isn't restored navigate to the first page or the error page
-				rootFrame.Content(MainPage ? static_cast<Windows::Foundation::IInspectable const &>(*MainPage) : *UnsupportedPage);
-			}
-			// Ensure the current window is active
-			Window::Current().Activate();
-
-			// Do secondary initialisation on the MainPage (acquire initial state) only if the hardware is supported
-			if (MainPage)
-			{
-				MainPage->Activate();
-			}
+			NavigateDependingOnInitialisation(rootFrame, e, false);
 		}
 	}
 }
@@ -148,4 +102,70 @@ void App::OnSuspending([[maybe_unused]] IInspectable const& sender, [[maybe_unus
 void App::OnNavigationFailed(IInspectable const&, NavigationFailedEventArgs const& e)
 {
 	throw hresult_error(E_FAIL, hstring(L"Failed to load Page ") + e.SourcePageType().Name);
+}
+
+void App::NavigateDependingOnInitialisation(Frame & RootFrame, const LaunchActivatedEventArgs & Event, bool FrameCreatedAnew)
+{
+	try
+	{
+		Radio.Initialise();
+		NavigateToMainPage(RootFrame, Event, FrameCreatedAnew);
+	}
+	catch (std::system_error& Error)
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter("Conversion to UTF-8 failed when displaying an error", L"Conversion to UTF-16 failed when displaying an error");
+		std::wstring wide = converter.from_bytes(Error.what());
+
+		NavigateToUnsupportedDevicePage(RootFrame, Event, FrameCreatedAnew, std::move(wide));
+	}
+	catch (...)
+	{
+		NavigateToUnsupportedDevicePage(RootFrame, Event, FrameCreatedAnew, L"Unknown error");
+	}
+}
+
+void App::NavigateToMainPage(Frame & RootFrame, const LaunchActivatedEventArgs & Event, bool FrameCreatedAnew)
+{
+	if (RootFrame.Content() == nullptr)
+	{
+		// When the navigation stack isn't restored navigate to the first page,
+		// configuring the new page by passing required information as a navigation
+		// parameter
+		RootFrame.Navigate(xaml_typename<FMRadio::MainPage>(), box_value(Event.Arguments()));
+	}
+
+	if (FrameCreatedAnew)
+	{
+		// Place the frame in the current Window
+		Window::Current().Content(RootFrame);
+	}
+
+	// Ensure the current window is active
+	Window::Current().Activate();
+
+	// Do secondary initialisation on the MainPage (acquire initial state) only if the hardware is supported
+	RootFrame.Content().as<struct MainPage>()->Initialise(&Radio);
+}
+
+void App::NavigateToUnsupportedDevicePage(Frame & RootFrame, const LaunchActivatedEventArgs & Event, bool FrameCreatedAnew, std::wstring Message)
+{
+	if (RootFrame.Content() == nullptr)
+	{
+		// When the navigation stack isn't restored navigate to the error page,
+		// configuring the new page by passing required information as a navigation
+		// parameter
+		RootFrame.Navigate(xaml_typename<FMRadio::UnsupportedDevicePage>(), box_value(Event.Arguments()));
+	}
+
+	if (FrameCreatedAnew)
+	{
+		// Place the frame in the current Window
+		Window::Current().Content(RootFrame);
+	}
+
+	// Ensure the current window is active
+	Window::Current().Activate();
+
+	// Do secondary initialisation on the UnsupportedDevicePage to give it the error message to display
+	RootFrame.Content().as<struct UnsupportedDevicePage>()->Initialise(std::move(Message));
 }

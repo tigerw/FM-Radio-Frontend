@@ -4,6 +4,7 @@ namespace FMRadio
 	runtimeclass MainPage : Windows.UI.Xaml.Controls.Page, Windows.UI.Xaml.Data.INotifyPropertyChanged
 	{
 		MainPage();
+		String FrequencyText;
 		String PlayPauseButtonText;
 		Windows.UI.Xaml.Controls.SymbolIcon PlayPauseButtonSymbol;
 	}

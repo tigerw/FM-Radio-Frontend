@@ -26,4 +26,3 @@
 #include <string>
 #include <functional>
 #include <thread>
-#include <memory>

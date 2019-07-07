@@ -23,11 +23,15 @@ namespace winrt::FMRadio::implementation
 
 	private:
 #ifdef _M_ARM
-		ZuneAPI Radio;
+		using RadioAPI = ZuneAPI;
 #else
-		MiniportAPI Radio;
+		using RadioAPI = MiniportAPI;
 #endif
-		std::unique_ptr<struct MainPage> MainPage;
-		std::unique_ptr<struct UnsupportedDevicePage> UnsupportedPage;
+
+		RadioAPI Radio;
+
+		void NavigateDependingOnInitialisation(winrt::Windows::UI::Xaml::Controls::Frame &, const Windows::ApplicationModel::Activation::LaunchActivatedEventArgs &, bool);
+		void NavigateToMainPage(winrt::Windows::UI::Xaml::Controls::Frame &, const Windows::ApplicationModel::Activation::LaunchActivatedEventArgs &, bool);
+		void NavigateToUnsupportedDevicePage(winrt::Windows::UI::Xaml::Controls::Frame &, const Windows::ApplicationModel::Activation::LaunchActivatedEventArgs &, bool, std::wstring Message);
     };
 }

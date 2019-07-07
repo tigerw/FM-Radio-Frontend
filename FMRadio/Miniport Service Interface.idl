@@ -21,6 +21,8 @@ interface MiniportServiceInterface
 		case PlayStateChanged: boolean PlayState;
 	};
 
-	union Notification AcquireEvent();
-	void QueueInitialStateEvents();
+	typedef unsigned short Client;
+
+	void AcquireEvent([in] Client ClientId, [out] union Notification * Event);
+	Client AcquireClientId();
 }
