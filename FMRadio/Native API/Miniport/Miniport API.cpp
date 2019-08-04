@@ -77,7 +77,7 @@ void MiniportAPI::EnableRadio()
 	{
 		::EnableRadio();
 	}
-	RpcExcept(1)
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 	{
 		throw std::system_error(::RpcExceptionCode(), std::system_category());
 	}
@@ -90,7 +90,7 @@ void MiniportAPI::DisableRadio()
 	{
 		::DisableRadio();
 	}
-	RpcExcept(1)
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 	{
 		throw std::system_error(::RpcExceptionCode(), std::system_category());
 	}
@@ -103,7 +103,7 @@ void MiniportAPI::SeekForwards()
 	{
 		::SeekForwards();
 	}
-	RpcExcept(1)
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 	{
 		throw std::system_error(::RpcExceptionCode(), std::system_category());
 	}
@@ -116,7 +116,7 @@ void MiniportAPI::SeekBackwards()
 	{
 		::SeekBackwards();
 	}
-	RpcExcept(1)
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
 	{
 		throw std::system_error(::RpcExceptionCode(), std::system_category());
 	}
@@ -125,4 +125,17 @@ void MiniportAPI::SeekBackwards()
 
 void MiniportAPI::SetAudioEndpoint(AudioEndpoint)
 {
+}
+
+void MiniportAPI::SetFrequency(FrequencyType Frequency)
+{
+	RpcTryExcept
+	{
+		::SetFrequency(Frequency);
+	}
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
+	{
+		throw std::system_error(::RpcExceptionCode(), std::system_category());
+	}
+	RpcEndExcept
 }

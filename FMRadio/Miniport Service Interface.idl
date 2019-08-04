@@ -4,10 +4,13 @@
 ]
 interface MiniportServiceInterface
 {
+	typedef int FrequencyType;
+
 	void EnableRadio();
 	void DisableRadio();
 	void SeekForwards();
 	void SeekBackwards();
+	void SetFrequency(FrequencyType Frequency);
 
 	enum Event
 	{

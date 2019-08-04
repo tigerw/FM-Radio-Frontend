@@ -1,0 +1,8 @@
+namespace FMRadio
+{
+	[default_interface]
+	runtimeclass AntennaNotPresentPage : Windows.UI.Xaml.Controls.Page
+	{
+		AntennaNotPresentPage();
+	}
+}

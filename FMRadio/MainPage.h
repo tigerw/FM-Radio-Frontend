@@ -1,8 +1,9 @@
 ﻿#pragma once
 
 #include "MainPage.g.h"
-#include "Native API/Miniport/Miniport API.h"
 #include "Native API/Zune Media/Zune API.h"
+#include "Native API/Miniport/Miniport API.h"
+#include "Converters/ActualWidth Halving Converter.h"
 
 namespace winrt::FMRadio::implementation
 {
@@ -10,7 +11,6 @@ namespace winrt::FMRadio::implementation
 	{
 		MainPage();
 
-		void Initialise(RadioAPI *);
 		void PageLoaded(const Windows::Foundation::IInspectable &, const Windows::UI::Xaml::RoutedEventArgs &);
 
 		hstring FrequencyText();
@@ -22,21 +22,26 @@ namespace winrt::FMRadio::implementation
 		Windows::UI::Xaml::Controls::SymbolIcon PlayPauseButtonSymbol();
 		void PlayPauseButtonSymbol(Windows::UI::Xaml::Controls::SymbolIcon);
 
-		void ToggledOutput(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void SeekedBackward(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void ToggledPlayState(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void SeekedForward(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void RegionChangedToWorldwide_Click(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void RegionChangedToNorthAmerica(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-		void RegionChangedToJapan(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
+		void ToggledOutput(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void SeekedBackward(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void ToggledPlayState(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void SeekedForward(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void RegionChangedToWorldwide_Click(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void RegionChangedToNorthAmerica(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void RegionChangedToJapan(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
 
-		winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& value);
-		void PropertyChanged(winrt::event_token const& token);
+		void TunerWindowScrolled(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs const &);
+		void TunerDialLoaded(Windows::Foundation::IInspectable const &, Windows::UI::Xaml::RoutedEventArgs const &);
+		void TunerWindowScrolled(Windows::Foundation::IInspectable const &, Windows::Foundation::IInspectable const &);
+
+		winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const &);
+		void PropertyChanged(winrt::event_token const &);
 
 	private:
-		RadioAPI * Radio;
 		bool RadioPlaying;
 		hstring DisplayedFrequency;
+		bool FrequencyUpdateUserOverride;
+		FrequencyType DialFrequencyToDisplay;
 		winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler> PropertyChanged_;
 	};
 }

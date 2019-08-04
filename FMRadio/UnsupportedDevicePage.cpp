@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "UnsupportedDevicePage.h"
-#if __has_include("UnsupportedDevicePage.g.cpp")
 #include "UnsupportedDevicePage.g.cpp"
-#endif
 
 using namespace winrt;
 using namespace Windows::UI::Xaml;
@@ -14,8 +12,8 @@ namespace winrt::FMRadio::implementation
         InitializeComponent();
     }
 
-	void UnsupportedDevicePage::Initialise(std::wstring Text)
+	void UnsupportedDevicePage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs const & Arguments)
 	{
-		ErrorMessage().Text(std::move(Text));
+		ErrorMessage().Text(std::move(unbox_value<hstring>(Arguments.Parameter())));
 	}
 }

@@ -2,7 +2,6 @@
 
 #include "pch.h"
 #include "Native API/Radio API.h"
-#include "Miniport Service Interface.h"
 
 class MiniportAPI : public RadioAPI
 {
@@ -27,4 +26,5 @@ public:
 	void SeekForwards() final override;
 	void SeekBackwards() final override;
 	void SetAudioEndpoint(AudioEndpoint) final override;
+	void SetFrequency(FrequencyType) final override;
 };

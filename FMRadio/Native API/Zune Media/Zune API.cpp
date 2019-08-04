@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Zune API.h"
 
-ZuneAPI * RadioReference;
-
 void ZuneAPI::NotificationHandler(const ZMEDIAQUEUE_NOTIFICATIONDATA * NotificationData)
 {
 	if (NotificationData->queue != ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO)
@@ -10,14 +8,16 @@ void ZuneAPI::NotificationHandler(const ZMEDIAQUEUE_NOTIFICATIONDATA * Notificat
 		return;
 	}
 
+	const auto ZuneRadio = static_cast<ZuneAPI *>(RadioAPI::Radio);
+
 	switch (NotificationData->notifyCode)
 	{
 		case ZMEDIAQUEUE_NOTIFICATION::ZMEDIAQUEUE_NOTIFICATION_ANTENNASTATUSCHANGE:
 		{
 			switch (NotificationData->param1)
 			{
-				case 0: if (RadioReference->OnAntennaInserted) RadioReference->OnAntennaInserted(); return;
-				case 1: if (RadioReference->OnAntennaRemoved) RadioReference->OnAntennaRemoved(); return;
+				case 0: if (ZuneRadio->OnAntennaRemoved) ZuneRadio->OnAntennaRemoved(); return;
+				case 1: if (ZuneRadio->OnAntennaInserted) ZuneRadio->OnAntennaInserted(); return;
 			}
 
 			assert(!"Unexpected value for antenna status");
@@ -27,9 +27,9 @@ void ZuneAPI::NotificationHandler(const ZMEDIAQUEUE_NOTIFICATIONDATA * Notificat
 		{
 			switch (static_cast<ZMEDIAQUEUE_PLAYSTATE>(NotificationData->param1))
 			{
-				case ZMEDIAQUEUE_PLAYSTATE::ZMEDIAQUEUE_PLAYSTATE_PLAYING: if (RadioReference->OnPlayed) RadioReference->OnPlayed(); return;
+				case ZMEDIAQUEUE_PLAYSTATE::ZMEDIAQUEUE_PLAYSTATE_PLAYING: if (ZuneRadio->OnPlayed) ZuneRadio->OnPlayed(); return;
 				case ZMEDIAQUEUE_PLAYSTATE::ZMEDIAQUEUE_PLAYSTATE_UNKNOWN:
-				case ZMEDIAQUEUE_PLAYSTATE::ZMEDIAQUEUE_PLAYSTATE_STOPPED: if (RadioReference->OnPaused) RadioReference->OnPaused(); return;
+				case ZMEDIAQUEUE_PLAYSTATE::ZMEDIAQUEUE_PLAYSTATE_STOPPED: if (ZuneRadio->OnPaused) ZuneRadio->OnPaused(); return;
 			}
 
 			assert(!"Unexpected value for radio play state");
@@ -37,46 +37,55 @@ void ZuneAPI::NotificationHandler(const ZMEDIAQUEUE_NOTIFICATIONDATA * Notificat
 		}
 		case ZMEDIAQUEUE_NOTIFICATION::ZMEDIAQUEUE_NOTIFICATION_FREQUENCYCHANGED:
 		{
-			if (RadioReference->OnFrequencyChanged)
+			if (ZuneRadio->OnFrequencyChanged)
 			{
 				ZMEDIAQUEUE_TUNEPARAMS TuneParameters;
-				RadioAPI::CheckedAPICall(RadioReference->GetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &TuneParameters);
-				RadioReference->OnFrequencyChanged(TuneParameters.kHz);
+				RadioAPI::CheckedAPICall(ZuneRadio->GetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &TuneParameters);
+				ZuneRadio->OnFrequencyChanged(TuneParameters.kHz);
 			}
 			return;
 		}
 		case ZMEDIAQUEUE_NOTIFICATION::ZMEDIAQUEUE_NOTIFICATION_RDSREADY:
 		{
-			if (RadioReference->OnProgrammeServiceNameReady)
+			if (ZuneRadio->OnProgrammeServiceNameReady)
 			{
 				std::wstring Name;
 				Name.resize(9);
-				RadioAPI::CheckedAPICall(RadioReference->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_NAME, Name.data(), Name.length());
-				RadioReference->OnProgrammeServiceNameReady(std::move(Name));
+				RadioAPI::CheckedAPICall(ZuneRadio->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_NAME, Name.data(), Name.length());
+				ZuneRadio->OnProgrammeServiceNameReady(std::move(Name));
 			}
 
-			if (RadioReference->OnProgrammeIdentificationReady)
+			if (ZuneRadio->OnProgrammeIdentificationReady)
 			{
 				std::wstring Callsign;
 				Callsign.resize(5);
-				RadioAPI::CheckedAPICall(RadioReference->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_CALLSIGN, Callsign.data(), Callsign.length());
-				RadioReference->OnProgrammeIdentificationReady(std::move(Callsign));
+				RadioAPI::CheckedAPICall(ZuneRadio->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_CALLSIGN, Callsign.data(), Callsign.length());
+				ZuneRadio->OnProgrammeIdentificationReady(std::move(Callsign));
 			}
 
-			if (RadioReference->OnRadioTextReady)
+			if (ZuneRadio->OnRadioTextReady)
 			{
 				std::wstring Description;
 				Description.resize(65);
-				CheckedAPICall(RadioReference->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_DESCRIPTION, Description.data(), Description.length());
-				RadioReference->OnRadioTextReady(std::move(Description));
+				CheckedAPICall(ZuneRadio->GetStationText_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_STATIONTEXT::ZMEDIAQUEUE_STATIONTEXT_DESCRIPTION, Description.data(), Description.length());
+				ZuneRadio->OnRadioTextReady(std::move(Description));
 			}
 		}
 	}
 }
 
-ZuneAPI::ZuneAPI()
+FrequencyType ZuneAPI::AdjustFrequency(FrequencyType Frequency)
 {
-	RadioReference = this;
+	const FrequencyType MaximumPrecision = 100;
+	const auto ExcessPrecision = Frequency % MaximumPrecision;
+	const auto BaseFrequency = Frequency - ExcessPrecision;
+
+	if (ExcessPrecision > (MaximumPrecision / 2))
+	{
+		return BaseFrequency + MaximumPrecision;
+	}
+
+	return BaseFrequency;
 }
 
 void ZuneAPI::Initialise()
@@ -109,18 +118,34 @@ void ZuneAPI::Initialise()
 	GetStationText_ = GetFunctionAddress<ZMediaQueue_GetStationText>(MediaQueueAddress, "ZMediaQueue_GetStationText");
 	EnableStationData_ = GetFunctionAddress<ZMediaQueue_EnableStationData>(MediaQueueAddress, "ZMediaQueue_EnableStationData");
 	SetProperty_ = GetFunctionAddress<ZMediaQueue_SetProperty>(MediaQueueAddress, "ZMediaQueue_SetProperty");
+	GetProperty_ = GetFunctionAddress<ZMediaQueue_GetProperty>(MediaQueueAddress, "ZMediaQueue_GetProperty");
 
 	CheckedAPICall(ConnectToService_);
 	CheckedAPICall(EnableStationData_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, true);
+	CheckedAPICall(SetRadioRegion_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_RADIOREGION::ZMEDIAQUEUE_RADIOREGION_EUROPE);
+
+	{
+		int PropertyValue;
+		size_t PropertySize;
+		CheckedAPICall(GetProperty_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_PROPERTY::ZMEDIAQUEUE_PROPERTY_RADIO_ANTENNASTATUS, &PropertyValue, &PropertySize);
+
+		ZMEDIAQUEUE_NOTIFICATIONDATA NotificationData{
+				ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO,
+				ZMEDIAQUEUE_NOTIFICATION::ZMEDIAQUEUE_NOTIFICATION_ANTENNASTATUSCHANGE,
+				0, 0,
+				static_cast<size_t>(PropertyValue)
+		};
+		NotificationHandler(&NotificationData);
+	}
+
+	auto WrapperAddress = ZuneAPI::NotificationHandler;
+	void* UnknownParameter = nullptr;
+
+	CheckedAPICall(RegisterForNotifications_, &WrapperAddress, &UnknownParameter);
 }
 
 void ZuneAPI::AcquireInitialState()
 {
-	CheckedAPICall(SetRadioRegion_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_RADIOREGION::ZMEDIAQUEUE_RADIOREGION_EUROPE);
-
-	UINT Frequency = 105400U;
-	//CheckedAPICall(SetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &Frequency);
-
 	{
 		ZMEDIAQUEUE_PLAYSTATE PlayState;
 		CheckedAPICall(GetPlayState_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &PlayState);
@@ -134,18 +159,17 @@ void ZuneAPI::AcquireInitialState()
 		NotificationHandler(&NotificationData);
 	}
 	{
+		ZMEDIAQUEUE_TUNEPARAMS Tune;
+		CheckedAPICall(GetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &Tune);
+
 		ZMEDIAQUEUE_NOTIFICATIONDATA NotificationData{
 				ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO,
 				ZMEDIAQUEUE_NOTIFICATION::ZMEDIAQUEUE_NOTIFICATION_FREQUENCYCHANGED,
-				0, 0, 0
+				0, 0,
+				static_cast<size_t>(Tune.kHz)
 		};
 		NotificationHandler(&NotificationData);
 	}
-
-	auto WrapperAddress = ZuneAPI::NotificationHandler;
-	void * UnknownParameter = nullptr;
-
-	CheckedAPICall(RegisterForNotifications_, &WrapperAddress, &UnknownParameter);
 }
 
 void ZuneAPI::EnableRadio()
@@ -188,4 +212,16 @@ void ZuneAPI::SetAudioEndpoint(AudioEndpoint Endpoint)
 	}
 
 	CheckedAPICall(SetProperty_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, ZMEDIAQUEUE_PROPERTY::ZMEDIAQUEUE_PROPERTY_AUDIOROUTINGPREFERENCE, static_cast<int>(MediaEndpoint), sizeof(ZMEDIAQUEUE_AUDIOENDPOINT));
+}
+
+void ZuneAPI::SetFrequency(FrequencyType Frequency)
+{
+	ZMEDIAQUEUE_HDTUNEPARAMS HD;
+	HD.hdStatus = ZMEDIAQUEUE_HDRADIO_STATUS::ZMEDIAQUEUE_SIGNAL_ANALOG;
+
+	ZMEDIAQUEUE_TUNEPARAMS Tune;
+	Tune.HDParams = HD;
+	Tune.kHz = ZuneAPI::AdjustFrequency(Frequency);
+
+	CheckedAPICall(SetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &Tune);
 }

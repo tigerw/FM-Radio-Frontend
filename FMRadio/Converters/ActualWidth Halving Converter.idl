@@ -1,0 +1,7 @@
+namespace FMRadio
+{
+	runtimeclass ActualWidthHalvingConverter : [default] Windows.UI.Xaml.Data.IValueConverter
+	{
+		ActualWidthHalvingConverter();
+	}
+}

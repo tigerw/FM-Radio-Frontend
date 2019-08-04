@@ -1,8 +1,8 @@
 namespace FMRadio
 {
-    [default_interface]
-    runtimeclass UnsupportedDevicePage : Windows.UI.Xaml.Controls.Page
-    {
-        UnsupportedDevicePage();
-    }
+	[default_interface]
+	runtimeclass UnsupportedDevicePage : Windows.UI.Xaml.Controls.Page
+	{
+		UnsupportedDevicePage();
+	}
 }

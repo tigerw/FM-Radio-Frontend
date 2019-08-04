@@ -1,0 +1,7 @@
+namespace FMRadio
+{
+	runtimeclass FrequencyFormattingConverter : [default] Windows.UI.Xaml.Data.IValueConverter
+	{
+		FrequencyFormattingConverter();
+	}
+}

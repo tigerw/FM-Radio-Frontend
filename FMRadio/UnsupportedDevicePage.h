@@ -4,17 +4,17 @@
 
 namespace winrt::FMRadio::implementation
 {
-    struct UnsupportedDevicePage : UnsupportedDevicePageT<UnsupportedDevicePage>
-    {
-        UnsupportedDevicePage();
+	struct UnsupportedDevicePage : UnsupportedDevicePageT<UnsupportedDevicePage>
+	{
+		UnsupportedDevicePage();
 
-		void Initialise(std::wstring);
-    };
+		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs const &);
+	};
 }
 
 namespace winrt::FMRadio::factory_implementation
 {
-    struct UnsupportedDevicePage : UnsupportedDevicePageT<UnsupportedDevicePage, implementation::UnsupportedDevicePage>
-    {
-    };
+	struct UnsupportedDevicePage : UnsupportedDevicePageT<UnsupportedDevicePage, implementation::UnsupportedDevicePage>
+	{
+	};
 }

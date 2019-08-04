@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#define _WIN32_LEAN_AND_MEAN
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <windows.h>
@@ -19,10 +20,9 @@
 #include <winrt/Windows.UI.Xaml.Interop.h>
 #include <winrt/Windows.UI.Xaml.Markup.h>
 #include <winrt/Windows.UI.Xaml.Navigation.h>
+#include <winrt/Windows.UI.Xaml.Shapes.h>
 
-#include <iostream>
-#include <locale>
 #include <codecvt>
-#include <string>
+#include <chrono>
 #include <functional>
 #include <thread>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include "Miniport Service Interface.h"
 
 enum class AudioEndpoint
 {
@@ -12,9 +13,9 @@ class RadioAPI
 {
 public:
 	template<typename FunctionType>
-	static FunctionType * GetFunctionAddress(HMODULE StartAddress, LPCSTR ExportedName)
+	static FunctionType* GetFunctionAddress(HMODULE StartAddress, LPCSTR ExportedName)
 	{
-		const auto FunctionAddress = reinterpret_cast<FunctionType *>(::GetProcAddress(StartAddress, ExportedName));
+		const auto FunctionAddress = reinterpret_cast<FunctionType*>(::GetProcAddress(StartAddress, ExportedName));
 		if (FunctionAddress == nullptr)
 		{
 			throw std::system_error(::GetLastError(), std::system_category());
@@ -66,6 +67,7 @@ public:
 	virtual void SeekForwards() = 0;
 	virtual void SeekBackwards() = 0;
 	virtual void SetAudioEndpoint(AudioEndpoint) = 0;
+	virtual void SetFrequency(FrequencyType) = 0;
 
 	std::function<void(int)> OnFrequencyChanged;
 	std::function<void()> OnAntennaRemoved;
@@ -75,4 +77,6 @@ public:
 	std::function<void(std::wstring)> OnProgrammeServiceNameReady;
 	std::function<void(std::wstring)> OnProgrammeIdentificationReady;
 	std::function<void(std::wstring)> OnRadioTextReady;
+
+	static RadioAPI * Radio;
 };

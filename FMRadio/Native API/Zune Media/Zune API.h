@@ -20,7 +20,7 @@ class ZuneAPI : public RadioAPI
 
 	using ZMediaQueue_SetFrequency = WINUSERAPI HRESULT WINAPI(
 		ZMEDIAQUEUE QueueType,
-		UINT * KHz
+		ZMEDIAQUEUE_TUNEPARAMS * TuneParameters
 	);
 
 	using ZMediaQueue_GetFrequency = WINUSERAPI HRESULT WINAPI(
@@ -60,17 +60,24 @@ class ZuneAPI : public RadioAPI
 		bool Enable
 	);
 
-	using LoadLibraryExW = HMODULE WINAPI(
-		LPCWSTR lpLibFileName,
-		HANDLE hFile,
-		DWORD dwFlags
-	);
-
 	using ZMediaQueue_SetProperty = WINUSERAPI HRESULT WINAPI(
 		ZMEDIAQUEUE QueueType,
 		ZMEDIAQUEUE_PROPERTY Property,
 		int PropertyValue,
 		size_t PropertySize
+	);
+
+	using ZMediaQueue_GetProperty = WINUSERAPI HRESULT WINAPI(
+		ZMEDIAQUEUE QueueType,
+		ZMEDIAQUEUE_PROPERTY Property,
+		int * PropertyValue,
+		size_t * PropertySize
+	);
+
+	using LoadLibraryExW = HMODULE WINAPI(
+		LPCWSTR lpLibFileName,
+		HANDLE hFile,
+		DWORD dwFlags
 	);
 
 	ZMediaQueue_ConnectToService * ConnectToService_;
@@ -85,11 +92,13 @@ class ZuneAPI : public RadioAPI
 	ZMediaQueue_GetStationText * GetStationText_;
 	ZMediaQueue_EnableStationData * EnableStationData_;
 	ZMediaQueue_SetProperty * SetProperty_;
+	ZMediaQueue_GetProperty* GetProperty_;
 
 	static void NotificationHandler(const ZMEDIAQUEUE_NOTIFICATIONDATA * NotificationData);
 
+	static FrequencyType AdjustFrequency(FrequencyType);
+
 public:
-	ZuneAPI();
 	void Initialise() final override;
 	void AcquireInitialState() final override;
 
@@ -98,4 +107,5 @@ public:
 	void SeekForwards() final override;
 	void SeekBackwards() final override;
 	void SetAudioEndpoint(AudioEndpoint) final override;
+	void SetFrequency(FrequencyType) final override;
 };

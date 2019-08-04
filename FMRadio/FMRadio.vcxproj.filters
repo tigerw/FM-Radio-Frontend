@@ -6,10 +6,18 @@
   <ItemGroup>
     <Page Include="MainPage.xaml" />
     <Page Include="UnsupportedDevicePage.xaml" />
+    <Page Include="AntennaNotPresentPage.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="App.idl" />
     <Midl Include="MainPage.idl" />
+    <Midl Include="Converters\ActualWidth Halving Converter.idl">
+      <Filter>Converters</Filter>
+    </Midl>
+    <Midl Include="Converters\Frequency Formatting Converter.idl">
+      <Filter>Converters</Filter>
+    </Midl>
+    <Midl Include="AntennaNotPresentPage.idl" />
     <Midl Include="UnsupportedDevicePage.idl" />
   </ItemGroup>
   <ItemGroup>
@@ -17,27 +25,23 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="MainPage.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
-    <ClCompile Include="Native API\Zune Media\Zune API.cpp">
-      <Filter>Native API\Zune Media</Filter>
-    </ClCompile>
     <ClCompile Include="Native API\Miniport\Miniport API.cpp">
       <Filter>Native API\Miniport</Filter>
     </ClCompile>
+    <ClCompile Include="Native API\Zune Media\Zune API.cpp">
+      <Filter>Native API\Zune Media</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\ActualWidth Halving Converter.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+    <ClCompile Include="Converters\Frequency Formatting Converter.cpp">
+      <Filter>Converters</Filter>
+    </ClCompile>
+    <ClCompile Include="AntennaNotPresentPage.cpp" />
     <ClCompile Include="UnsupportedDevicePage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="App.h" />
-    <ClInclude Include="MainPage.h" />
-    <ClInclude Include="Native API\Zune Media Headers\ZMediaLibTypes.h">
-      <Filter>Native API\Zune Media</Filter>
-    </ClInclude>
-    <ClInclude Include="Native API\Zune Media Headers\ZMediaQueueTypes.h">
-      <Filter>Native API\Zune Media</Filter>
-    </ClInclude>
-    <ClInclude Include="Native API\Zune Media\Zune API.h">
-      <Filter>Native API\Zune Media</Filter>
-    </ClInclude>
     <ClInclude Include="Native API\Radio API.h">
       <Filter>Native API</Filter>
     </ClInclude>
@@ -47,6 +51,27 @@
     <ClInclude Include="Native API\Miniport\RPC Client.h">
       <Filter>Native API\Miniport</Filter>
     </ClInclude>
+    <ClInclude Include="Native API\Zune Media\ZMediaLibTypes.h">
+      <Filter>Native API\Zune Media</Filter>
+    </ClInclude>
+    <ClInclude Include="Native API\Zune Media\ZMediaQueueTypes.h">
+      <Filter>Native API\Zune Media</Filter>
+    </ClInclude>
+    <ClInclude Include="Native API\Zune Media\Zune API.h">
+      <Filter>Native API\Zune Media</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\ActualWidth Halving Converter.h">
+      <Filter>Converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\Frequency Formatting Converter.h">
+      <Filter>Converters</Filter>
+    </ClInclude>
+    <ClInclude Include="Converters\Frequency Offset Converter.h">
+      <Filter>Converters</Filter>
+    </ClInclude>
+    <ClInclude Include="AntennaNotPresentPage.h" />
+    <ClInclude Include="App.h" />
+    <ClInclude Include="MainPage.h" />
     <ClInclude Include="UnsupportedDevicePage.h" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +186,21 @@
     <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png">
+      <Filter>Assets</Filter>
+    </Image>
     <Image Include="Assets\SplashScreen.scale-100.png">
       <Filter>Assets</Filter>
     </Image>
@@ -188,45 +228,31 @@
     <Image Include="Assets\StoreLogo.scale-400.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png">
-      <Filter>Assets</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Package.StoreAssociation.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Assets">
       <UniqueIdentifier>{e48dc53e-40b1-40cb-970a-f89935452892}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Native API">
-      <UniqueIdentifier>{7d10260f-61ce-45c6-ae8f-fa38cfbe8632}</UniqueIdentifier>
+    <Filter Include="Converters">
+      <UniqueIdentifier>{657d92e0-80da-4a33-b9b0-e78adf03044f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Native API\Zune Media">
-      <UniqueIdentifier>{db0980e4-f814-4e29-b2bb-39ef0fd01154}</UniqueIdentifier>
+    <Filter Include="Native API">
+      <UniqueIdentifier>{7c3aeb4a-d8ee-4878-a7ba-78f66a97cbfb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Native API\Miniport">
-      <UniqueIdentifier>{dafed296-c966-46b1-8d8b-c9cae5659acf}</UniqueIdentifier>
+      <UniqueIdentifier>{092567b4-7ac3-467e-baa2-ff0db0e854a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Native API\Zune Media">
+      <UniqueIdentifier>{04e4f4ed-7385-4bdd-b45f-1f598767ba4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertySheet.props" />
+    <None Include="packages.config" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Miniport Service Interface.idl" />
