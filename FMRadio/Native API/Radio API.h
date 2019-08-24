@@ -3,12 +3,6 @@
 #include "pch.h"
 #include "Miniport Service Interface.h"
 
-enum class AudioEndpoint
-{
-	Headset,
-	Speakers
-};
-
 class RadioAPI
 {
 public:

@@ -1,5 +1,6 @@
 ﻿<Page
 	Background="{ThemeResource SystemAccentColor}"
+	Foreground="White"
 	x:Class="FMRadio.AntennaNotPresentPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,12 +11,12 @@
 >
 	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE904;" FontSize="35" Foreground="{ThemeResource SystemBaseMediumLowColor}" />
+			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE904;" FontSize="35" Foreground="{ThemeResource SystemAltMediumLowColor}" />
 			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE871;" FontSize="35" Margin="-30,0,4,0" />
 			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F6;" FontSize="35" />
 		</StackPanel>
 
-		<TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Margin="0,10,0,0">Your headphones are your antenna.</TextBlock>
-		<TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="20">Plug in a pair of analog heaphones to listen to radio.</TextBlock>
+		<TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Margin="0,10,0,0" Text="Your headphones are your antenna" />
+		<TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Text="Plug in a pair of analog heaphones to listen to radio." />
 	</StackPanel>
 </Page>

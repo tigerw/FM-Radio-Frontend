@@ -34,6 +34,11 @@ void MiniportAPI::NotificationProcessor()
 					Event.tagged_union.PlayState ? OnPlayed() : OnPaused();
 					break;
 				}
+				case Event::AntennaStateChanged:
+				{
+					Event.tagged_union.Present ? OnAntennaInserted() : OnAntennaRemoved();
+					break;
+				}
 			}
 		}
 		RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
@@ -64,11 +69,13 @@ void MiniportAPI::Initialise()
 
 	// Make sure the RPC server is running, throw an exception and show "not supported" on the UI otherwise
 	PingRPCServer();
+
+	ListenerThread = std::thread(&MiniportAPI::NotificationProcessor, this);
 }
 
 void MiniportAPI::AcquireInitialState()
 {
-	ListenerThread = std::thread(&MiniportAPI::NotificationProcessor, this);
+	::AcquireInitialState();
 }
 
 void MiniportAPI::EnableRadio()
@@ -123,8 +130,17 @@ void MiniportAPI::SeekBackwards()
 	RpcEndExcept
 }
 
-void MiniportAPI::SetAudioEndpoint(AudioEndpoint)
+void MiniportAPI::SetAudioEndpoint(AudioEndpoint Endpoint)
 {
+	RpcTryExcept
+	{
+		::SetAudioEndpoint(Endpoint);
+	}
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
+	{
+		throw std::system_error(::RpcExceptionCode(), std::system_category());
+	}
+	RpcEndExcept
 }
 
 void MiniportAPI::SetFrequency(FrequencyType Frequency)

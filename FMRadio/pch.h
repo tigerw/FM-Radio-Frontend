@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define _WIN32_LEAN_AND_MEAN
+#define _CRT_SECURE_NO_WARNINGS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <windows.h>

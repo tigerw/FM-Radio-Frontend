@@ -6,26 +6,36 @@ interface MiniportServiceInterface
 {
 	typedef int FrequencyType;
 
+	enum AudioEndpoint
+	{
+		Headset,
+		Speakers
+	};
+
 	void EnableRadio();
 	void DisableRadio();
 	void SeekForwards();
 	void SeekBackwards();
+	void SetAudioEndpoint(enum AudioEndpoint);
 	void SetFrequency(FrequencyType Frequency);
 
 	enum Event
 	{
 		FrequencyChanged,
-		PlayStateChanged
+		PlayStateChanged,
+		AntennaStateChanged
 	};
 
 	union Notification switch (enum Event Type)
 	{
-		case FrequencyChanged: unsigned long KHz;
+		case FrequencyChanged: FrequencyType KHz;
 		case PlayStateChanged: boolean PlayState;
+		case AntennaStateChanged: boolean Present;
 	};
 
 	typedef unsigned short Client;
 
 	void AcquireEvent([in] Client ClientId, [out] union Notification * Event);
+	void AcquireInitialState();
 	Client AcquireClientId();
 }
