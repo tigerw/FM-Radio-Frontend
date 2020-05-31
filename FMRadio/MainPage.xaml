@@ -10,21 +10,28 @@
 >
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<StackPanel Padding="24">
-			<Border BorderBrush="{ThemeResource AppBarItemForegroundThemeBrush}" BorderThickness="3" Padding="12">
+			<Border BorderBrush="{ThemeResource AppBarItemForegroundThemeBrush}" BorderThickness="3" Padding="10">
 				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
+						<RowDefinition />
+						<RowDefinition/>
 						<RowDefinition/>
 					</Grid.RowDefinitions>
 
-					<TextBlock x:Name="StationNameTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" TextLineBounds="TrimToCapHeight" />
+					<Grid Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
 
-					<SymbolIcon Symbol="{Binding SignalBars}" HorizontalAlignment="Left" Grid.RowSpan="2" Margin="0,0,0,107" />
+						<SymbolIcon Grid.Column="0" HorizontalAlignment="Left" x:Name="SignalQualitySymbolIcon" Symbol="ZeroBars" />
+						<TextBlock Grid.Column="1" HorizontalAlignment="Center" x:Name="StationNameTextBlock" />
+						<TextBlock Grid.Column="2" HorizontalAlignment="Right" Text="FM" />
+					</Grid>
 
-					<TextBlock Text="FM" HorizontalAlignment="Right" VerticalAlignment="Top" TextLineBounds="TrimToCapHeight" Grid.RowSpan="2" />
-					<TextBlock Text="MHz" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextLineBounds="TrimToBaseline" Grid.RowSpan="2" />
-
-					<TextBlock Text="{x:Bind FrequencyText, Mode=OneWay}" FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" TextLineBounds="Tight" />
+					<TextBlock Grid.Row="1" Text="{x:Bind FrequencyText, Mode=OneWay}" FontSize="100" HorizontalAlignment="Center" TextLineBounds="Tight" Margin="0,25,0,0" />
+					<TextBlock Grid.Row="2" Text="MHz" HorizontalAlignment="Right" />
 
 					<!--<TextBlock Text="{Binding Frequency, Converter={StaticResource FrequencyFormatter}}"
                                FontSize="100" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" TextLineBounds="Tight" />-->

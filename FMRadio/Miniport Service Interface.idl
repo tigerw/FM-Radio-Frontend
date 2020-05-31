@@ -18,6 +18,7 @@ interface MiniportServiceInterface
 	void SeekBackwards();
 	void SetAudioEndpoint(enum AudioEndpoint);
 	void SetFrequency(FrequencyType Frequency);
+	unsigned GetSignalQuality();
 
 	enum Event
 	{

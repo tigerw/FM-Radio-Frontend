@@ -155,3 +155,16 @@ void MiniportAPI::SetFrequency(FrequencyType Frequency)
 	}
 	RpcEndExcept
 }
+
+unsigned MiniportAPI::GetSignalQuality()
+{
+	RpcTryExcept
+	{
+		return ::GetSignalQuality();
+	}
+	RpcExcept(RpcExceptionFilter(RpcExceptionCode()))
+	{
+		throw std::system_error(::RpcExceptionCode(), std::system_category());
+	}
+	RpcEndExcept
+}

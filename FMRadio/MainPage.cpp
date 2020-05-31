@@ -4,6 +4,8 @@
 #include "Converters/Frequency Offset Converter.h"
 #include "Converters/Frequency Formatting Converter.h"
 
+#include <winrt/Windows.Media.h>
+
 using namespace winrt;
 using namespace Windows::UI::Xaml;
 
@@ -16,6 +18,21 @@ namespace winrt::FMRadio::implementation
 		InitializeComponent();
 
 		NavigationCacheMode(Windows::UI::Xaml::Navigation::NavigationCacheMode::Required);
+
+		{
+			Windows::Media::SystemMediaTransportControls c = Windows::Media::SystemMediaTransportControls::GetForCurrentView();
+			c.IsPlayEnabled(true);
+			c.IsPauseEnabled(true);
+			c.IsStopEnabled(true);
+			c.IsEnabled(true);
+			Windows::Media::SystemMediaTransportControlsDisplayUpdater updater = c.DisplayUpdater();
+			updater.Type(Windows::Media::MediaPlaybackType::Music);
+			updater.MusicProperties().Artist(L"artist");
+			updater.MusicProperties().AlbumArtist(L"album artist");
+			updater.MusicProperties().Title(L"song title");
+			updater.Update();
+			c.PlaybackStatus(Windows::Media::MediaPlaybackStatus::Playing);
+		}
 
 		RadioAPI::Radio->OnPlayed = [this] {
 			Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher().RunAsync(
@@ -83,6 +100,9 @@ namespace winrt::FMRadio::implementation
 			);
 		};
 
+		SignalQualityUpdateTimer.Interval(std::chrono::seconds(5));
+		SignalQualityUpdateTimer.Tick({ this, &MainPage::SignalQualityUpdateTicked });
+
 		try
 		{
 			RadioAPI::Radio->AcquireInitialState();
@@ -110,6 +130,8 @@ namespace winrt::FMRadio::implementation
 				TunerWindow().ScrollToHorizontalOffset(FrequencyOffsetConverter::Convert(DialFrequencyToDisplay));
 			}
 		);
+
+		SignalQualityUpdateTimer.Start();
 	}
 
 	hstring MainPage::FrequencyText()
@@ -364,5 +386,40 @@ namespace winrt::FMRadio::implementation
 	void MainPage::PropertyChanged(winrt::event_token const & token)
 	{
 		PropertyChanged_.remove(token);
+	}
+
+	void MainPage::SignalQualityUpdateTicked(Windows::Foundation::IInspectable const &, Windows::Foundation::IInspectable const &)
+	{
+		unsigned Quality;
+		try
+		{
+			Quality = RadioAPI::Radio->GetSignalQuality();
+		}
+		catch (std::system_error &)
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::ZeroBars);
+			return;
+		}
+
+		if (Quality <= 5)
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::ZeroBars);
+		}
+		else if (Quality <= 25)
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::OneBar);
+		}
+		else if (Quality <= 50)
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::TwoBars);
+		}
+		else if (Quality <= 75)
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::ThreeBars);
+		}
+		else
+		{
+			SignalQualitySymbolIcon().Symbol(Windows::UI::Xaml::Controls::Symbol::FourBars);
+		}
 	}
 }

@@ -3,7 +3,7 @@
 #include "pch.h"
 #include "Native API/Radio API.h"
 
-class MiniportAPI : public RadioAPI
+class MiniportAPI final : public RadioAPI
 {
 	std::thread ListenerThread;
 
@@ -18,13 +18,14 @@ class MiniportAPI : public RadioAPI
 
 public:
 	/// <summary>Hello</summary>
-	void Initialise() final override;
-	void AcquireInitialState() final override;
+	void Initialise() override;
+	void AcquireInitialState() override;
 
-	void EnableRadio() final override;
-	void DisableRadio() final override;
-	void SeekForwards() final override;
-	void SeekBackwards() final override;
-	void SetAudioEndpoint(AudioEndpoint) final override;
-	void SetFrequency(FrequencyType) final override;
+	void EnableRadio() override;
+	void DisableRadio() override;
+	void SeekForwards() override;
+	void SeekBackwards() override;
+	void SetAudioEndpoint(AudioEndpoint) override;
+	void SetFrequency(FrequencyType) override;
+	unsigned GetSignalQuality() override;
 };

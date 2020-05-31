@@ -37,11 +37,14 @@ namespace winrt::FMRadio::implementation
 		winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const &);
 		void PropertyChanged(winrt::event_token const &);
 
+		void SignalQualityUpdateTicked(Windows::Foundation::IInspectable const &, Windows::Foundation::IInspectable const &);
+
 	private:
 		bool RadioPlaying;
 		hstring DisplayedFrequency;
 		bool FrequencyUpdateUserOverride;
 		FrequencyType DialFrequencyToDisplay;
+		Windows::UI::Xaml::DispatcherTimer SignalQualityUpdateTimer;
 		winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler> PropertyChanged_;
 	};
 }

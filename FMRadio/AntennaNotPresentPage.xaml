@@ -11,7 +11,7 @@
 >
 	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE904;" FontSize="35" Foreground="{ThemeResource SystemAltMediumLowColor}" />
+			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE904;" FontSize="35" Opacity="0.4" />
 			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE871;" FontSize="35" Margin="-30,0,4,0" />
 			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7F6;" FontSize="35" />
 		</StackPanel>

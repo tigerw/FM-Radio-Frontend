@@ -62,6 +62,7 @@ public:
 	virtual void SeekBackwards() = 0;
 	virtual void SetAudioEndpoint(AudioEndpoint) = 0;
 	virtual void SetFrequency(FrequencyType) = 0;
+	virtual unsigned GetSignalQuality() = 0;
 
 	std::function<void(int)> OnFrequencyChanged;
 	std::function<void()> OnAntennaRemoved;

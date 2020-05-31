@@ -128,30 +128,8 @@ void App::NavigateDependingOnInitialisation(Frame & RootFrame)
 	}
 	catch (std::system_error & Error)
 	{
-		{
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter("Conversion to UTF-8 failed when displaying an error", L"Conversion to UTF-16 failed when displaying an error");
-			std::wstring wide = converter.from_bytes(Error.what());
-		}
-
-		{
-			std::wstring_convert<std::codecvt<wchar_t, char, std::mbstate_t>> converter("Conversion to UTF-8 failed when displaying an error", L"Conversion to UTF-16 failed when displaying an error");
-			std::wstring wide = converter.from_bytes(Error.what());
-		}
-
-		{
-			auto w = Error.what();
-			std::size_t len = 1 + std::mbsrtowcs(nullptr, &w, 0, nullptr);
-			std::wstring wstr(len, wchar_t());
-			std::mbsrtowcs(wstr.data(), &w, wstr.size(), nullptr);
-		}
-
-		{
-			size_t len = MultiByteToWideChar(CP_ACP, 0, Error.what(), -1, nullptr, 0);
-			std::wstring wstr(len, wchar_t());
-			MultiByteToWideChar(CP_ACP, 0, Error.what(), -1, wstr.data(), wstr.size());
-		}
-
-		//RootFrame.Navigate(xaml_typename<FMRadio::UnsupportedDevicePage>(), box_value(std::move(wide)));
+		std::wstring_convert<std::codecvt_byname<wchar_t, char, std::mbstate_t>> converter(new std::codecvt_byname<wchar_t, char, std::mbstate_t>(""));
+		RootFrame.Navigate(xaml_typename<FMRadio::UnsupportedDevicePage>(), box_value(converter.from_bytes(Error.what())));
 	}
 	catch (...)
 	{

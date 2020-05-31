@@ -119,6 +119,7 @@ void ZuneAPI::Initialise()
 	EnableStationData_ = GetFunctionAddress<ZMediaQueue_EnableStationData>(MediaQueueAddress, "ZMediaQueue_EnableStationData");
 	SetProperty_ = GetFunctionAddress<ZMediaQueue_SetProperty>(MediaQueueAddress, "ZMediaQueue_SetProperty");
 	GetProperty_ = GetFunctionAddress<ZMediaQueue_GetProperty>(MediaQueueAddress, "ZMediaQueue_GetProperty");
+	GetSignalQuality_ = GetFunctionAddress<ZMediaQueue_GetSignalQuality>(MediaQueueAddress, "ZMediaQueue_GetSignalQuality");
 
 	CheckedAPICall(ConnectToService_);
 	CheckedAPICall(EnableStationData_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, true);
@@ -224,4 +225,16 @@ void ZuneAPI::SetFrequency(FrequencyType Frequency)
 	Tune.kHz = ZuneAPI::AdjustFrequency(Frequency);
 
 	CheckedAPICall(SetFrequency_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &Tune);
+}
+
+unsigned ZuneAPI::GetSignalQuality()
+{
+	int RSSI;
+	CheckedAPICall(GetSignalQuality_, ZMEDIAQUEUE::ZMEDIAQUEUE_RADIO, &RSSI);
+
+	static const auto Minimum = 80L;
+	static const auto Maximum = 135L;
+
+	// Map a 80-135 scale (by experiment) to 0-100
+	return static_cast<unsigned>(std::max(0L, (100 * (static_cast<signed long>(RSSI) - Minimum)) / (Maximum - Minimum)));
 }

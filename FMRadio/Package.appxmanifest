@@ -3,7 +3,7 @@
   <Identity
     Name="8419TigerWang.Airwaves"
     Publisher="CN=6F3B45BD-FB5C-4DB0-ACF0-6E6DFA7321E8"
-    Version="1.2.4.0" />
+    Version="1.2.8.0" />
   <mp:PhoneIdentity PhoneProductId="6c979124-745c-4d0d-9746-2b438f192098" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   <Properties>
     <DisplayName>Airwaves</DisplayName>
